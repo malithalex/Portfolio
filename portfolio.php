@@ -7,7 +7,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     
     $to = "malith.alex@gmail.com"; // Change this to your email address
     $subject = "New Form Submission: $subject";
-    $message = "Name: $name\nEmail: $email\nProject Details:\n$projectDetails";
+    $message = "Name: $name\n Email: $email\n Project Details:\n $projectDetails";
     
     // Send the email
     mail($to, $subject, $message);

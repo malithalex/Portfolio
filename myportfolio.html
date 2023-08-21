@@ -770,14 +770,15 @@
         })
           .then((response) => response.text())
           .then((data) => {
-            if (data === "success") {
+            if (data.trim() === "success") {
               alert("Form submitted successfully!");
               contactForm.reset(); // Clear the form fields
             } else {
-              alert("Form submission failed. Please try again later.");
+              alert("Form submission failed. Server response: " + data);
             }
           })
-          .catch(() => {
+          .catch((error) => {
+            console.error("An error occurred:", error);
             alert("An error occurred. Please try again later.");
           })
           .finally(() => {
