@@ -581,35 +581,46 @@
 
           <div class="col-lg-6">
             <!-- form fields -->
-            <form>
+            <form id="contactForm" action="portfolio.php" method="POST">
               <input
                 type="text"
                 class="form-control form-control-lg"
                 placeholder="Name"
+                name="name"
+                required
               />
               <input
                 type="email"
                 class="form-control mt-3"
                 placeholder="Email"
+                name="email"
+                required
               />
               <input
                 type="text"
                 class="form-control mt-3"
                 placeholder="Subject"
+                name="subject"
+                required
               />
               <div class="mb-3 mt-3">
                 <textarea
                   class="form-control"
                   rows="5"
-                  id="comment"
-                  name="text"
+                  id="projectDetails"
+                  name="project_details"
                   placeholder="Project Details"
+                  required
                 ></textarea>
               </div>
+              <button
+                type="submit"
+                class="btn btn-success mt-3"
+                id="submitButton"
+              >
+                Contact Me
+              </button>
             </form>
-            <button type="button" class="btn btn-success mt-3">
-              Contact Me
-            </button>
           </div>
         </div>
       </div>
@@ -744,5 +755,35 @@
         header.classList.remove("navbarDark");
       }
     };
+
+    document.addEventListener("DOMContentLoaded", function () {
+      const contactForm = document.getElementById("contactForm");
+      const submitButton = document.getElementById("submitButton");
+
+      contactForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+        submitButton.disabled = true;
+
+        fetch(contactForm.action, {
+          method: "POST",
+          body: new FormData(contactForm),
+        })
+          .then((response) => response.text())
+          .then((data) => {
+            if (data === "success") {
+              alert("Form submitted successfully!");
+              contactForm.reset(); // Clear the form fields
+            } else {
+              alert("Form submission failed. Please try again later.");
+            }
+          })
+          .catch(() => {
+            alert("An error occurred. Please try again later.");
+          })
+          .finally(() => {
+            submitButton.disabled = false;
+          });
+      });
+    });
   </script>
 </html>
