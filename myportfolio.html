@@ -11,6 +11,7 @@
       integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="FigmaLinks\new\Home.css" media="screen" />
 
     <style>
       /* TODO 4: Use flexbox to center the card in the vertical and horizontal center. 
@@ -689,46 +690,60 @@
 
           <div class="col-lg-6" id="formStatus">
             <!-- form fields -->
-            <form id="contactForm" action="portfolio.php" method="POST">
-              <input
-                type="text"
-                class="form-control form-control-lg"
-                placeholder="Name"
-                name="name"
-                required
-              />
-              <input
-                type="email"
-                class="form-control mt-3"
-                placeholder="Email"
-                name="email"
-                required
-              />
-              <input
-                type="text"
-                class="form-control mt-3"
-                placeholder="Subject"
-                name="subject"
-                required
-              />
-              <div class="mb-3 mt-3">
-                <textarea
-                  class="form-control"
-                  rows="5"
-                  id="projectDetails"
-                  name="project_details"
-                  placeholder="Project Details"
-                  required
-                ></textarea>
-              </div>
-              <button
-                type="submit"
-                class="btn btn-success mt-3"
-                id="submitButton"
+            <form>
+              <iframe
+                src="https://docs.google.com/forms/d/e/1FAIpQLSdNWf83r2NXQOaOEf4Jub2t9e7rLsMbwdaxKydyEtKDnzlUZg/viewform?embedded=true"
+                width="640"
+                height="914"
+                frameborder="0"
+                marginheight="0"
+                marginwidth="0"
+                >Loading…</iframe
               >
-                Contact Me
-              </button>
             </form>
+
+            <!-- <section class="contact-timeline">
+              <form
+                id="contactForm"
+                action="https://whimsical-marigold-9f09d8.netlify.app/myportfolio.html"
+                method="post"
+              >
+                <section class="contact-name-and-number">
+                  <input
+                    class="form-control mt-3"
+                    type="text"
+                    id="name"
+                    placeholder="Your Name"
+                    required
+                  />
+                  <input
+                    class="form-control mt-3"
+                    type="text"
+                    id="phone"
+                    placeholder="Your Phone Number"
+                    required
+                  />
+                </section>
+                <section class="contact-others-inputs">
+                  <input
+                    class="form-control mt-3"
+                    type="email"
+                    id="email"
+                    placeholder="Email"
+                    required
+                  />
+                  <textarea
+                    class="form-control mt-3"
+                    id="message"
+                    rows="12"
+                    placeholder="How can i help you ?"
+                  ></textarea>
+                  <button type="submit" class="btn btn-success mt-3">
+                    Inqure Me
+                  </button>
+                </section>
+              </form>
+            </section> -->
           </div>
         </div>
       </div>
@@ -864,70 +879,33 @@
       }
     };
 
-    // document.addEventListener("DOMContentLoaded", function () {
-    //   const contactForm = document.getElementById("contactForm");
-    //   const submitButton = document.getElementById("submitButton");
+    function doPost(e) {
+      var form = FormApp.openById(
+        "1FAIpQLSdNWf83r2NXQOaOEf4Jub2t9e7rLsMbwdaxKydyEtKDnzlUZg"
+      );
+      var formResponse = form.createResponse();
+      var itemResponses = form.getItems();
 
-    //   contactForm.addEventListener("submit", function (event) {
-    //     event.preventDefault();
-    //     submitButton.disabled = true;
+      for (var i = 0; i < itemResponses.length; i++) {
+        var item = itemResponses[i];
+        var itemId = item.getId();
+        var type = item.getType();
+        var title = item.getTitle();
 
-    //     fetch(contactForm.action, {
-    //       method: "POST",
-    //       body: new FormData(contactForm),
-    //     })
-    //       .then((response) => response.text())
-    //       .then((data) => {
-    //         if (data.trim() === "success") {
-    //           alert("Form submitted successfully!");
-    //           contactForm.reset(); // Clear the form fields
-    //         } else {
-    //           alert("Form submission failed. Server response: " + data);
-    //         }
-    //       })
-    //       .catch((error) => {
-    //         console.error("An error occurred:", error);
-    //         alert("An error occurred. Please try again later.");
-    //       })
-    //       .finally(() => {
-    //         submitButton.disabled = false;
-    //       });
-    //   });
-    // });
+        if (type === FormApp.ItemType.TEXT) {
+          var response = e.parameter[title.toLowerCase().replace(/\s/g, "")];
+          formResponse.withItemResponse(
+            item.asTextItem().createResponse(response)
+          );
+        } else if (type === FormApp.ItemType.MULTIPLE_CHOICE) {
+          // Handle other types if needed
+        }
+      }
 
-    document.addEventListener("DOMContentLoaded", function () {
-      const contactForm = document.getElementById("contactForm");
-      const submitButton = document.getElementById("submitButton");
-      const formStatus = document.getElementById("formStatus");
-
-      contactForm.addEventListener("submit", function (event) {
-        event.preventDefault(); // Prevent the default form submission
-
-        // Collect form data
-        const formData = new FormData(contactForm);
-
-        // Send form data to the server using AJAX
-        fetch("portfolio.php", {
-          method: "POST",
-          body: formData,
-        })
-          .then((response) => {
-            if (!response.ok) {
-              throw new Error("Failed to send email.");
-            }
-            return response.json();
-          })
-          .then((data) => {
-            // Handle the server response
-            formStatus.textContent = data.message;
-            contactForm.reset(); // Reset the form
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            formStatus.textContent =
-              "An error occurred. Please try again later.";
-          });
-      });
-    });
+      formResponse.submit();
+      return ContentService.createTextOutput("Success").setMimeType(
+        ContentService.MimeType.TEXT
+      );
+    }
   </script>
 </html>
